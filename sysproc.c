@@ -89,3 +89,16 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// mark a chunck of memory as not writable
+int
+sys_mprotect(void* addr, int len) {
+    return mprotect(addr, len);
+
+}
+
+//mark a chunk of memory as writable
+int	
+sys_munprotect(void* addr, int len) {
+    return munprotect(addr, len);
+}

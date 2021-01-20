@@ -532,3 +532,27 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+
+//PAGEBREAK: !
+
+// clear the writable flag
+// of the chunk of memory from addr to addr+len 
+// so it can't be manipulated.
+int
+mprotect(void* addr, int len) {
+    return 22
+
+}
+
+
+// reverses the mprotect proc effect
+int
+munprotect(void* addr, int len) {
+    return 23
+
+}
+
+
+
+
