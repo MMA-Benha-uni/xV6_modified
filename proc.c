@@ -647,8 +647,9 @@ mprotect(void *addr, int len) {
             curr += PGSIZE;
         }
     }
-     
-    return 22
+    //flush the tlb to take the changes into account 
+    lcr3(V2P(myproc()->pgdir));
+    return 22 //call id
 
 }
 
@@ -685,7 +686,9 @@ munprotect(void *addr, int len) {
             curr += PGSIZE;
         }
     }
-    return 23
+    //flush the tlb to take the changes into account 
+    lcr3(V2P(myproc()->pgdir));
+    return 23 //call id
 }
 
 
