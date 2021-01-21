@@ -27,8 +27,8 @@ int uptime(void);
 int settickets(int);
 int getpinfo(struct pstat*);
 
-int	mprotect(void* addr, int len);
-int	munprotect(void* addr, int len);
+int	mprotect(void *addr, int len);
+int	munprotect(void *addr, int len);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

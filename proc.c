@@ -8,7 +8,9 @@
 #include "spinlock.h"
 #include "rand.h"
 #include "pstat.h"
+#include "vm.h"
 
+import vm.walkpgdir;
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -615,7 +617,37 @@ procdump(void)
 // of the chunk of memory from addr to addr+len 
 // so it can't be manipulated.
 int
-mprotect(void* addr, int len) {
+mprotect(void *addr, int len) {
+
+    //check if it's page aligned or not 
+    if ((uint)addr & 0x3 || len <= 0) {
+        return -1 // it's not aligned or len<1
+    }
+    else {
+        pde_t* pde;
+        pte_t* pte;
+        
+        uint curr = (uint)addr;
+        
+        
+        while(curr< ((uint)addr+len)) {
+            
+            pde = myproc()->pgdir;
+            pte = walkpgdir(pde, (void*)curr, 0);
+            cprintf("page table entry before: 0x%x\n", *pte);
+
+            // check if the page is in the address space (presentable)
+            if (!(*pte & PTE_P)) {
+                return -1;
+            }
+            // clr the writable bit to make the page readable only 
+            *pte &= ~PTE_W;
+
+            cprintf("page table entry after: 0x%x\n", *pte);
+            curr += PGSIZE;
+        }
+    }
+     
     return 22
 
 }
@@ -623,9 +655,37 @@ mprotect(void* addr, int len) {
 
 // reverses the mprotect proc effect
 int
-munprotect(void* addr, int len) {
-    return 23
+munprotect(void *addr, int len) {
+    
+    //check if it's page aligned or not 
+    if ((uint)addr & 0x3 || len <= 0) {
+        return -1 // it's not aligned or len<1
+    }
+    else {
+        pde_t* pde;
+        pte_t* pte;
 
+        uint curr = (uint)addr;
+
+
+        while (curr < ((uint)addr + len)) {
+
+            pde = myproc()->pgdir;
+            pte = walkpgdir(pde, (void*)curr, 0);
+            cprintf("page table entry before: 0x%x\n", *pte);
+
+            // check if the page is in the address space (presentable)
+            if (!(*pte & PTE_P)) {
+                return -1;
+            }
+            // set the writable bit to make the page readable only 
+            *pte &= PTE_W;
+
+            cprintf("page table entry after: 0x%x\n", *pte);
+            curr += PGSIZE;
+        }
+    }
+    return 23
 }
 
 
