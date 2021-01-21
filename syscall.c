@@ -103,6 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_settickets(void);
+extern int sys_getpinfo(void);
 extern int sys_mprotect(void* addr, int len);
 extern int sys_munprotect(void* addr, int len);
 
@@ -128,8 +130,6 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_mprotect]   sys_mprotect,
-[SYS_munprotect]   sys_munprotect,
 };
 
 void
