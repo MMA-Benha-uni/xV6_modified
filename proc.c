@@ -621,7 +621,7 @@ mprotect(void *addr, int len) {
 
     //check if it's page aligned or not 
     if ((uint)addr & 0x3 || len <= 0) {
-        return -1 // it's not aligned or len<1
+        return -1; // it's not aligned or len<1
     }
     else {
         pde_t* pde;
@@ -649,7 +649,7 @@ mprotect(void *addr, int len) {
     }
     //flush the tlb to take the changes into account 
     lcr3(V2P(myproc()->pgdir));
-    return 22 //call id
+    return 22; //call id
 
 }
 
@@ -660,7 +660,7 @@ munprotect(void *addr, int len) {
     
     //check if it's page aligned or not 
     if ((uint)addr & 0x3 || len <= 0) {
-        return -1 // it's not aligned or len<1
+        return -1; // it's not aligned or len<1
     }
     else {
         pde_t* pde;
@@ -688,7 +688,7 @@ munprotect(void *addr, int len) {
     }
     //flush the tlb to take the changes into account 
     lcr3(V2P(myproc()->pgdir));
-    return 23 //call id
+    return 23; //call id
 }
 
 
