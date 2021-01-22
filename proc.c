@@ -10,7 +10,7 @@
 #include "pstat.h"
 #include "vm.h"
 
-import vm.walkpgdir;
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -633,11 +633,11 @@ mprotect(void *addr, int len) {
         while(curr< ((uint)addr+len)) {
             
             pde = myproc()->pgdir;
-            pte = walkpgdir(pde, (void*)curr, 0);
+            pte = walkpgdir(pde, (void *)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (!(*pte & PTE_P)) {
+            if (pte==0) {
                 return -1;
             }
             // clr the writable bit to make the page readable only 
@@ -672,11 +672,11 @@ munprotect(void *addr, int len) {
         while (curr < ((uint)addr + len)) {
 
             pde = myproc()->pgdir;
-            pte = walkpgdir(pde, (void*)curr, 0);
+            pte = walkpgdir(pde, (void *)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (!(*pte & PTE_P)) {
+            if (pte==0) {
                 return -1;
             }
             // set the writable bit to make the page readable only 

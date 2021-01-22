@@ -9,6 +9,7 @@
 #include "pstat.h"
 
 
+
 int
 sys_fork(void)
 {
@@ -116,12 +117,15 @@ sys_getpinfo(void){
 // mark a chunck of memory as not writable
 int
 sys_mprotect(void *addr, int len) {
-    return mprotect(*addr, len);
+    return mprotect((uint *)addr, len);
 
 }
 
 //mark a chunk of memory as writable
 int	
 sys_munprotect(void *addr, int len) {
-    return munprotect(*addr, len);
-}
+    return munprotect((uint *)addr, len);
+} 
+
+
+
