@@ -38,4 +38,5 @@ then we got this output as
 ![image](https://user-images.githubusercontent.com/48224880/105906923-fcbcef00-602c-11eb-9722-3722d7790b58.png)
 
 so we plotted the graph as per output to describe how three processes with tickets ratios 1:2:3 will divide time slices and the graph where as shown 
+![image](https://user-images.githubusercontent.com/48224880/105908601-16f7cc80-602f-11eb-84e3-e2ace66cb3f7.png)
 
