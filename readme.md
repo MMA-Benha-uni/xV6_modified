@@ -59,12 +59,16 @@ in the user space, or not and whether the num of pages given is in the limit or 
 ## kerneal thread
 we made two system calls clone() and join() and two functions thread_create and thread_join and the three other functions (lock_inti ,aquire and release) is already bulit in in spinlock.c
 
+we made changes to `syscall.h` to give the system calls `clone()` 26 and `join` 27 
+
 ![image](https://user-images.githubusercontent.com/47832007/106009861-7d2d2f80-60c1-11eb-9b71-c347c3d821ba.png)
 
+and added these modifications to `syscall.c` to add pointers to functions 26 and 27
 
 ![image](https://user-images.githubusercontent.com/47832007/106010005-abab0a80-60c1-11eb-9c02-a63f7cab9e20.png)
-
 ![image](https://user-images.githubusercontent.com/47832007/106010114-c2e9f800-60c1-11eb-90bd-f14e9ee678e8.png)
+
+and the last file we edited is `sysproc.c` where we added the implmentation of our method in
 
 ![image](https://user-images.githubusercontent.com/47832007/106010208-db5a1280-60c1-11eb-9621-abc2c694c789.png)
 
