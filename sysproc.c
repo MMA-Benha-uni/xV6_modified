@@ -116,16 +116,24 @@ sys_getpinfo(void){
 
 // mark a chunck of memory as not writable
 int
-sys_mprotect(void *addr, int len) {
-    return mprotect((uint *)addr, len);
+sys_mprotect(void){
+  int d;
+  int n = 0;
+  if(argint(0, &d)<0 || argint(1, &n)<0)
+    return -1;
+  return mprotect((void *)d,n);
 
 }
 
-//mark a chunk of memory as writable
-int	
-sys_munprotect(void *addr, int len) {
-    return munprotect((uint *)addr, len);
-} 
+int
+sys_munprotect(void){
+  int d;
+  int n = 0;
+  if(argint(0, &d)<0 || argint(1, &n)<0)
+    return -1;
+  return munprotect((void *)d,n);
+
+}
 
 
 

@@ -619,10 +619,19 @@ procdump(void)
 int
 mprotect(void *addr, int len) {
 
-    //check if it's page aligned or not 
-    if ((uint)addr & 0x3 || len <= 0) {
-        return -1; // it's not aligned or len<1
-    }
+     struct proc *curproc = myproc();
+  
+  //Check if addr points to a region that is not currently a part of the address space
+  if(len <= 0 || (int)addr+len*PGSIZE>curproc->sz){
+    cprintf("\nwrong len\n");
+    return -1;
+  }
+
+  //Check if addr is not page aligned
+  if((int)(((int) addr) % PGSIZE )  != 0){
+    cprintf("\nwrong addr %p\n", addr);
+    return -1;
+  }
     else {
         pde_t* pde;
         pte_t* pte;
@@ -630,16 +639,16 @@ mprotect(void *addr, int len) {
         uint curr = (uint)addr;
         
         struct proc *curproc = myproc();
-        pde = *curproc->pgdir;
+        pde = curproc->pgdir;
 
-        while(curr<(*curproc->sz) && curr < ((uint)addr + len * PGSIZE)){
+        while(curr<(curproc->sz) && curr < ((uint)addr + len * PGSIZE)){
             
             
             pte = walkpgdir(pde, (void *)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (!pte && !(pte & PTE_U) && !(pte & PTE_P)) {
+            if (!pte || !(*pte & PTE_U) || !(*pte & PTE_P)) {
                 return -1;
             }
             // clr the writable bit to make the page readable only 
@@ -651,7 +660,7 @@ mprotect(void *addr, int len) {
     }
     //flush the tlb to take the changes into account 
     lcr3(V2P(myproc()->pgdir));
-    return 22; //call id
+    return 0; //call id
 
 }
 
@@ -671,16 +680,16 @@ munprotect(void *addr, int len) {
         uint curr = (uint)addr;
 
         struct proc* curproc = myproc();
-        pde = *curproc->pgdir;
+        pde = curproc->pgdir;
 
-        while (curr < (*curproc->sz) && curr<((uint)addr+len*PGSIZE)) {
+        while (curr < (curproc->sz) && curr<((uint)addr+len*PGSIZE)) {
 
 
             pte = walkpgdir(pde, (void*)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (!pte && !(pte & PTE_U) && !(pte & PTE_P)) {
+            if (!pte || !(*pte & PTE_U) || !(*pte & PTE_P)) {
                 return -1;
             }
             // clr the writable bit to make the page readable only 
@@ -692,7 +701,7 @@ munprotect(void *addr, int len) {
     }
     //flush the tlb to take the changes into account 
     lcr3(V2P(myproc()->pgdir));
-    return 23; //call id
+    return 0; //call id
 
 }
 
