@@ -41,3 +41,12 @@ so we plotted the graph as per output to describe how three processes with ticke
 ![image](https://user-images.githubusercontent.com/48224880/105909454-40fdbe80-6030-11eb-8020-896e3bdb933e.png)
 
 
+Read-Only
+
+in this module we added to syscalls that will pe used to mark/unmark the required pages (in user space)
+as Read_Only pages to prevent a bugy program from writing on it's own code in memory.
+
+The syscalls are mprotect and munprotect.
+
+Both calls check whether the given page addr is in the current address space , the page is aligned,
+in the user space, or not and whether the num of pages given is in the limit or not if any of these checks came negative the call will trap 
