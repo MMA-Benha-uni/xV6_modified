@@ -9,6 +9,7 @@ to add a system call we need to make changes to files to add our system call to 
 ![image](https://user-images.githubusercontent.com/48224880/105907109-3e4d9a00-602d-11eb-8650-7df9b3261a9f.png)
 
 the second file we edited is the `syscall.c` ile where we will add a pointer in it to refer to our call to refer that the system calls 24 and 25 pointed to the functions written in the file as follows
+
 ![image](https://user-images.githubusercontent.com/48224880/105905090-b5cdfa00-602a-11eb-9a70-1de17d03bafd.png)
 
 then we're goint to add the function prototype in the same file also like this : 
