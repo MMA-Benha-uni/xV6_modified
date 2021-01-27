@@ -8,8 +8,9 @@ first we added `settickets()` which has a role to set the number of tickets for 
 to add a system call we need to make changes to files to add our system call to kernel so firstly we added our system call to syscall.h file so that we can assign our system call a number and we assigned it to 24 so that we added two system calls to make it clear for this module of lottery scheduler the first is `settickets()` and the other is `getpinfo()` and defined each of them a number to refer for 
 ![image](https://user-images.githubusercontent.com/48224880/105907109-3e4d9a00-602d-11eb-8650-7df9b3261a9f.png)
 
-the second file we edited is the `syscall.c` ile where we will add a pointer in it to refer to our call to refer that the system calls 24 and 25 pointed to the functions written in the file as follows 
+the second file we edited is the `syscall.c` ile where we will add a pointer in it to refer to our call to refer that the system calls 24 and 25 pointed to the functions written in the file as follows
 ![image](https://user-images.githubusercontent.com/48224880/105905090-b5cdfa00-602a-11eb-9a70-1de17d03bafd.png)
+
 then we're goint to add the function prototype in the same file also like this : 
 
 ![image](https://user-images.githubusercontent.com/48224880/105905147-c4b4ac80-602a-11eb-8325-b97663e2591e.png)
