@@ -706,5 +706,115 @@ munprotect(void *addr, int len) {
 }
 
 
+//clone
+int clone(void(*fcn)(void*,void*), void *arg1, void *arg2, void* stack)
+{
+  struct proc *np;
+  struct proc *p = myproc();
+  // Allocate process.
+  if((np = allocproc()) == 0)
+    return -1;
+
+  // Copy process data to the new thread
+  np->pgdir = p->pgdir;
+  np->sz = p->sz;
+  np->parent = p;
+  *np->tf = *p->tf;
+  
+  void * stackArg1, *stackArg2, *stackRet;
+  //pushing the fake return address to the stack of thread
+  stackRet = stack + PGSIZE -3*sizeof(void *);
+  *(uint*)stackRet = 0xFFFFFFF;
+
+  //pushing the first argument to the stack of thread
+  stackArg1 = stack + PGSIZE -2*sizeof(void *);
+  *(uint*)stackArg1 = (uint)arg1;
+
+  //pushing the second argument to the stack of thread
+  stackArg2 = stack + PGSIZE - sizeof(void *);
+  *(uint*)stackArg2 = (uint)arg2;
+
+
+  np->tf->esp = (uint) stack; //putting the address of stack in the stack pointer
+  np->tf->eax = 0;  
+  np->threadstack = stack;   //saving the address of the stack
+  
+  // Move the stack data of the current process(thread)
+  // to the stack of the new thread
+  // memmove((void*)np->tf->esp, stack, PGSIZE);
+
+  np->tf->esp += PGSIZE -3*sizeof(void*) ;
+  np->tf->ebp = np->tf->esp;
+  np->tf->eip = (uint) fcn; //begin excuting code from this function
+
+  // Duplicate the files used by the current process(thread) to be used 
+  // also by the new thread
+  int i;
+  for(i = 0; i < NOFILE; i++)
+    if(p->ofile[i])
+      np->ofile[i] = filedup(p->ofile[i]);
+  // Duplicate the current directory to be used by the new thread
+  np->cwd = idup(p->cwd);
+ 
+  // Make the state of the new thread to be runnable 
+  np->state = RUNNABLE;
+
+  // Make the two threads belong to the current process
+  safestrcpy(np->name, p->name, sizeof(p->name));
+  return np->pid;
+}
+
+
+//join
+
+int
+join(void** stack)
+{
+  struct proc *p;           // The thread iterator
+  int havekids, pid;
+  struct proc *cp = myproc();
+  acquire(&ptable.lock);
+  for(;;){
+      // Scan through table looking for zombie children.
+      havekids = 0;
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+      // If the current process is not my parent or share the same address space...  
+      if(p->parent != cp || p->pgdir != p->parent->pgdir)
+        continue; // You are not a thread
+       
+      havekids = 1;
+      if(p->state == ZOMBIE){
+        // Found one.
+	      pid = p->pid;
+        // Removing thread from the kernal stack
+        kfree(p->kstack);
+        p->kstack = 0;
+
+        // Reseting thread from the process table
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+        stack = p->threadstack;
+        p->threadstack = 0;
+
+        release(&ptable.lock);
+	      return pid;
+      }
+      
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || cp->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(cp, &ptable.lock);  //DOC: wait-sleep
+  }
+}
 
 

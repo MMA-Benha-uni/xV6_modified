@@ -126,6 +126,8 @@ void            wakeup(void*);
 void            yield(void);
 int             settickets(int);
 int             getpinfo(struct pstat*);
+int             clone(void(*fcn)(void*, void*), void *, void* , void*);
+int             join(void**);	
 
 
 // swtch.S
