@@ -629,15 +629,17 @@ mprotect(void *addr, int len) {
         
         uint curr = (uint)addr;
         
-        
-        while(curr< ((uint)addr+len)) {
+        struct proc *curproc = myproc();
+        pde = *curproc->pgdir;
+
+        while(curr<(*curproc->sz) && curr < ((uint)addr + len * PGSIZE)){
             
-            pde = myproc()->pgdir;
+            
             pte = walkpgdir(pde, (void *)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (pte==0) {
+            if (!pte && !(pte & PTE_U) && !(pte & PTE_P)) {
                 return -1;
             }
             // clr the writable bit to make the page readable only 
@@ -668,19 +670,21 @@ munprotect(void *addr, int len) {
 
         uint curr = (uint)addr;
 
+        struct proc* curproc = myproc();
+        pde = *curproc->pgdir;
 
-        while (curr < ((uint)addr + len)) {
+        while (curr < (*curproc->sz) && curr<((uint)addr+len*PGSIZE)) {
 
-            pde = myproc()->pgdir;
-            pte = walkpgdir(pde, (void *)curr, 0);
+
+            pte = walkpgdir(pde, (void*)curr, 0);
             cprintf("page table entry before: 0x%x\n", *pte);
 
             // check if the page is in the address space (presentable)
-            if (pte==0) {
+            if (!pte && !(pte & PTE_U) && !(pte & PTE_P)) {
                 return -1;
             }
-            // set the writable bit to make the page readable only 
-            *pte &= PTE_W;
+            // clr the writable bit to make the page readable only 
+            *pte |= PTE_W;
 
             cprintf("page table entry after: 0x%x\n", *pte);
             curr += PGSIZE;
@@ -689,6 +693,7 @@ munprotect(void *addr, int len) {
     //flush the tlb to take the changes into account 
     lcr3(V2P(myproc()->pgdir));
     return 23; //call id
+
 }
 
 
