@@ -5,7 +5,7 @@ The first module is Lottery scheduler, the basic idea is that every process has 
 
 first we added `settickets()` which has a role to set the number of tickets for each process the second is `getpinfo()` which returns some information about running procceess from the process table, now we will explain each system call and how we added them to complete the lottery scheduler module
 
-to add a system call we need to make changes to files to add our system call to kernel so firstly we added our system call to syscall.h file so that we can assign our system call a number and we assigned it to 24 so that we added two system calls to make it clear for this module of lottery scheduler the first is `settickets()` and the other is `getpinfo()` and defined each of them a number to refer for 
+to add a system call we need to make changes to files to add our system call to kernel so firstly we added our system call to `syscall.h` file so that we can assign our system call a number and we assigned it to 24 so that we added two system calls to make it clear for this module of lottery scheduler the first is `settickets()` and the other is `getpinfo()` and defined each of them a number to refer for 
 ![image](https://user-images.githubusercontent.com/48224880/105907109-3e4d9a00-602d-11eb-8650-7df9b3261a9f.png)
 
 the second file we edited is the `syscall.c` ile where we will add a pointer in it to refer to our call to refer that the system calls 24 and 25 pointed to the functions written in the file as follows
@@ -16,11 +16,11 @@ then we're goint to add the function prototype in the same file also like this :
 
 ![image](https://user-images.githubusercontent.com/48224880/105905147-c4b4ac80-602a-11eb-8325-b97663e2591e.png)
 
-then we will implement function in the sysproc.c file as follows:
+then we will implement function in the `sysproc.c` file as follows:
 
 ![image](https://user-images.githubusercontent.com/48224880/105905312-f6c60e80-602a-11eb-92d5-993627f1a8f3.png)
 
-now we have to define how the user programs can access the system call so we will edit two more files which are usys.s
+now we have to define how the user programs can access the system call so we will edit two more files which are `usys.s`
 
 ![image](https://user-images.githubusercontent.com/48224880/105905560-43114e80-602b-11eb-8d14-7aca58391109.png)
 
