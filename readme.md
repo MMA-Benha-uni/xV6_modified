@@ -50,3 +50,5 @@ The syscalls are mprotect and munprotect.
 
 Both calls check whether the given page addr is in the current address space , the page is aligned,
 in the user space, or not and whether the num of pages given is in the limit or not if any of these checks came negative the call will trap 
+
+![image](https://ibb.co/L6kF1b0)
